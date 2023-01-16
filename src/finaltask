@@ -288,4 +288,59 @@ insert into rent_info (owner_id, customer_id, agency_id, house_id, check_in, che
 insert into rent_info (owner_id, customer_id, agency_id, house_id, check_in, check_out) values (29, 29, 7, 29, '2020-11-09', '2021-05-04');
 insert into rent_info (owner_id, customer_id, agency_id, house_id, check_in, check_out) values (30, 30, 8, 30, '2022-05-08', '2022-12-29');
 
-c
+-- 1. Owner_лердин аттарынын арасынан эн коп символ камтыган owner_ди жана анын уйун(House) чыгар.
+select  max( first_name) from owners join houses h on owners.id = h.owner_id where  owners.first_name like('________');
+
+-- 2. Уйлордун баалары 1500, 2000 дин аралыгында бар болсо true чыгар, жок болсо false чыгар.
+select   bool(price between 1500 and 2000) from houses;
+-- 3. id_лери 5, 6, 7, 8, 9, 10 го барабар болгон адресстерди жана ал адрессте кайсы уйлор бар экенин чыгар.
+
+select * from houses join houses h on houses.address_id = h.address_id where h.address_id in (5,6,7,8,9,10) ;
+
+-- 4. Бардык уйлорду, уйдун ээсинин атын, клиенттин атын, агенттин атын чыгар.
+select house_id, name, owners.first_name,c.first_name from owners join rent_info ri on owners.id = ri.owner_id join customers c on c.id = ri.customer_id join agencies a on a.id = ri.agency_id  ;
+-- 5. Клиенттердин 10-катарынан баштап 1999-жылдан кийин туулган 15 клиентти чыгар.
+select * from customers   where date_of_birth >'12-12-1999' offset 10 limit 15;
+-- 6. Рейтинги боюнча уйлорду сорттоп, уйлордун тайптарын, рейтингин жана уйдун ээлерин чыгар. (asc and desc)
+select house_type,rating,o.first_name from houses join owners o on houses.owner_id = o.id order by rating;
+select house_type,rating,o.first_name from houses join owners o on houses.owner_id = o.id order by rating desc ;
+-- 7. Уйлордун арасынан квартиралардын (apartment) санын жана алардын баасынын суммасын чыгар.
+select  count(house_type) , sum(price) from houses group by house_type, price  ;
+
+-- 8. Агентсволардын арасынан аты ‘My_House’ болгон агентсвоны, агентсвонын адресин жана
+-- анын бардык уйлорун,
+-- уйлордун адрессин чыгар.
+select name,address_id,address_id from agencies join addresses
+    a on a.id = agencies.address_id  where name='My_House ';
+
+-- 9. Уйлордун арасынан мебели бар уйлорду, уйдун ээсин жана уйдун адрессин чыгар.
+select o.*,a.* FROM houses join owners o on o.id = houses.owner_id join
+    addresses a on a.id = houses.address_id where houses.furniture = true;
+-- 10.Кленти жок уйлордун баарын жана анын адрессин жана ал уйлор кайсыл агентсвога тийешелуу экенин чыгар.
+-- 11.Клиенттердин улутуна карап, улутуну жана ал улуутта канча клиент жашайт санын чыгар.
+-- 12.Уйлордун арасынан рейтингтери  чон, кичине, орточо болгон 3 уйду чыгар.
+-- 13.Уйлору жок киленттерди, клиенттери жок уйлорду чыгар.
+-- 14.Уйлордун бааларынын орточо суммасын чыгар.
+select round( avg(price))   from houses ;
+-- 15.‘A’ тамга менен  башталган уйдун ээсинин аттарын, клиенттердин аттарын чыгар.
+
+-- 16.Эн уйу коп owner_ди жана анын уйлорунун санын чыгар.
+
+-- 17.Улуту Kyrgyzstan уй-булолу customerлерди чыгарыныз.
+select * from customers where  nationality = 'Kyrgyz' and marital_status = 'Married';
+
+-- 18.Эн коп болмолуу уйду жана анын адресин ал уй кайсыл ownerге таандык ошону чыгарыныз.
+-- 19.Бишкекте   жайгашкан уйлорду  жана  клиентерин  кошо чыгарыныз.
+-- 20.Жендерине карап группировка кылыныз.
+select gender,count(gender)from customers group by gender;
+select gender,count(gender) from owners group by  gender;
+-- 21.Эн коп моонотко  ижарага алынган уйду чыгарыныз.
+-- 22.Эн кымбат уйду жана анын ээсин чыгарыныз.
+select first_name,max(price) as max_price from houses join owners
+    o on houses.owner_id = o.id group by o.first_name order by max_price desc ;
+-- 23.Бир региондо жайгашкан баардык агентстволорду чыгарыныз
+select address_id from agencies ;
+-- 24.Рейтинг боюнча эн популярдуу 5 уйду чыгар.
+-- 25.Орто жаштагы owner_ди , анын уйун , уйдун адрессин чыгар.
+
+
